@@ -1,0 +1,3 @@
+{
+  "a54fc3674fda2961e3d43460c4a2650575297268f3fbfee58740efbff0b0aaf4": "query exampleQuery {\n  findCitiesUsingGET(namePrefix: \"Istanbul\") {\n    data {\n      name\n      todayForecast {\n        min_temp\n        max_temp\n      }\n    }\n  }\n}"
+}

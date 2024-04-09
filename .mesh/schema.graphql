@@ -1,0 +1,2816 @@
+schema {
+  query: Query
+}
+
+directive @enum(value: String) on ENUM_VALUE
+
+directive @globalOptions(sourceName: String, endpoint: String, operationHeaders: ObjMap, queryStringOptions: ObjMap, queryParams: ObjMap) on OBJECT
+
+directive @httpOperation(path: String, operationSpecificHeaders: ObjMap, httpMethod: HTTPMethod, isBinary: Boolean, requestBaseBody: ObjMap, queryParamArgMap: ObjMap, queryStringOptionsByParam: ObjMap) on FIELD_DEFINITION
+
+directive @resolveTo(requiredSelectionSet: String, sourceName: String!, sourceTypeName: String!, sourceFieldName: String!, sourceSelectionSet: String, sourceArgs: ResolveToSourceArgs, keyField: String, keysArg: String, pubsubTopic: String, filterBy: String, additionalArgs: ResolveToSourceArgs, result: String, resultType: String) on FIELD_DEFINITION
+
+type Query @globalOptions(sourceName: "Weather", endpoint: "https://api.weatherbit.io/v2.0", operationHeaders: "{\"X-RapidAPI-Key\":\"f93d3b393dmsh13fea7cb6981b2ep1dba0ajsn654ffeb48c26\"}") {
+  """
+  Find administrative divisions, filtering by optional criteria. If no criteria are set, you will get back all
+  known divisions.
+  
+  """
+  findAdminDivisionsUsingGET(
+    """
+    Only places near this location. Latitude/longitude in ISO-6709 format: ±DD.DDDD±DDD.DDDD
+    """
+    location: String
+    """The location radius within which to find places"""
+    radius: Int
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+    """
+    Only places in these countries (comma-delimited country codes or WikiData ids)
+    """
+    countryIds: String
+    """
+    Only places NOT in these countries (comma-delimited country codes or WikiData ids)
+    """
+    excludedCountryIds: String
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort places. 
+    Format: ±SORT_FIELD,±SORT_FIELD 
+    where SORT_FIELD = countryCode | elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/adminDivisions", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"location\":\"location\",\"radius\":\"radius\",\"distanceUnit\":\"distanceUnit\",\"countryIds\":\"countryIds\",\"excludedCountryIds\":\"excludedCountryIds\",\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Get the details for a specific administrative division, including location coordinates, population, and
+  elevation above sea-level (if available).
+  
+  """
+  getAdminDivisionUsingGET(
+    """An admin-division id (either native 'id' or 'wikiDataId')"""
+    divisionId: String!
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Display results in this language"""
+    languageCode: String
+  ): Populated_Place_Response @httpOperation(path: "/geo/adminDivisions/{args.divisionId}", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"asciiMode\":\"asciiMode\",\"languageCode\":\"languageCode\"}")
+  """
+  Find cities near the given administrative division, filtering by optional criteria. If no criteria are set, you
+  will get back all known cities.
+  
+  """
+  findCitiesNearAdminDivisionUsingGET(
+    """An admin-division id (either native 'id' or 'wikiDataId')"""
+    divisionId: String!
+    """The location radius within which to find places"""
+    radius: Int
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+    """
+    Only places in these countries (comma-delimited country codes or WikiData ids)
+    """
+    countryIds: String
+    """
+    Only places NOT in these countries (comma-delimited country codes or WikiData ids)
+    """
+    excludedCountryIds: String
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Only places for these types (comma-delimited): CITY | ADM2"""
+    types: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort places. 
+    Format: ±SORT_FIELD,±SORT_FIELD 
+    where SORT_FIELD = countryCode | elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/adminDivisions/{args.divisionId}/nearbyCities", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"radius\":\"radius\",\"distanceUnit\":\"distanceUnit\",\"countryIds\":\"countryIds\",\"excludedCountryIds\":\"excludedCountryIds\",\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"types\":\"types\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Find administrative divisions near the given origin division, filtering by optional criteria. If no criteria
+  are set, you will get back all known divisions.
+  
+  """
+  findDivisionsNearAdminDivisionUsingGET(
+    """An admin-division id (either native 'id' or 'wikiDataId')"""
+    divisionId: String!
+    """The location radius within which to find places"""
+    radius: Int
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+    """
+    Only places in these countries (comma-delimited country codes or WikiData ids)
+    """
+    countryIds: String
+    """
+    Only places NOT in these countries (comma-delimited country codes or WikiData ids)
+    """
+    excludedCountryIds: String
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort places. 
+    Format: ±SORT_FIELD,±SORT_FIELD 
+    where SORT_FIELD = countryCode | elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/adminDivisions/{args.divisionId}/nearbyDivisions", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"radius\":\"radius\",\"distanceUnit\":\"distanceUnit\",\"countryIds\":\"countryIds\",\"excludedCountryIds\":\"excludedCountryIds\",\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Find cities, filtering by optional criteria. If no criteria are set, you will get back all known cities.
+  
+  """
+  findCitiesUsingGET(
+    """
+    Only places near this location. Latitude/longitude in ISO-6709 format: ±DD.DDDD±DDD.DDDD
+    """
+    location: String
+    """The location radius within which to find places"""
+    radius: Int
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+    """
+    Only places in these countries (comma-delimited country codes or WikiData ids)
+    """
+    countryIds: String
+    """
+    Only places NOT in these countries (comma-delimited country codes or WikiData ids)
+    """
+    excludedCountryIds: String
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Only places for these types (comma-delimited): CITY | ADM2"""
+    types: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort places. 
+    Format: ±SORT_FIELD,±SORT_FIELD 
+    where SORT_FIELD = countryCode | elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/cities", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"location\":\"location\",\"radius\":\"radius\",\"distanceUnit\":\"distanceUnit\",\"countryIds\":\"countryIds\",\"excludedCountryIds\":\"excludedCountryIds\",\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"types\":\"types\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Get the details for a specific city, including location coordinates, population, and elevation above sea-level
+  (if available).
+  
+  """
+  getCityUsingGET(
+    """A city id (either native 'id' or 'wikiDataId')"""
+    cityId: String!
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Display results in this language"""
+    languageCode: String
+  ): Populated_Place_Response @httpOperation(path: "/geo/cities/{args.cityId}", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"asciiMode\":\"asciiMode\",\"languageCode\":\"languageCode\"}")
+  """Get city date-time"""
+  getCityDateTimeUsingGET(
+    """A city id (either native 'id' or 'wikiDataId')"""
+    cityId: String!
+  ): Date_Time_Response @httpOperation(path: "/geo/cities/{args.cityId}/dateTime", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET)
+  """Get distance from the given city"""
+  getCityDistanceUsingGET(
+    """A city id (either native 'id' or 'wikiDataId')"""
+    cityId: String!
+    """Distance to this city"""
+    toCityId: String!
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+  ): Distance_Response @httpOperation(path: "/geo/cities/{args.cityId}/distance", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"toCityId\":\"toCityId\",\"distanceUnit\":\"distanceUnit\"}")
+  """
+  Get the details for the containing populated place (e.g., its county or other administrative division), including location coordinates, population, and elevation above sea-level
+  (if available).
+  
+  """
+  getCityLocatedInUsingGET(
+    """A city id (either native 'id' or 'wikiDataId')"""
+    cityId: String!
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Display results in this language"""
+    languageCode: String
+  ): Populated_Place_Response @httpOperation(path: "/geo/cities/{args.cityId}/locatedIn", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"asciiMode\":\"asciiMode\",\"languageCode\":\"languageCode\"}")
+  """
+  Find cities near the given origin city, filtering by optional criteria. If no criteria are set, you will get
+  back all known cities.
+  
+  """
+  findCitiesNearCityUsingGET(
+    """A city id (either native 'id' or 'wikiDataId')"""
+    cityId: String!
+    """The location radius within which to find places"""
+    radius: Int
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+    """
+    Only places in these countries (comma-delimited country codes or WikiData ids)
+    """
+    countryIds: String
+    """
+    Only places NOT in these countries (comma-delimited country codes or WikiData ids)
+    """
+    excludedCountryIds: String
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Only places for these types (comma-delimited): CITY | ADM2"""
+    types: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort places. 
+    Format: ±SORT_FIELD,±SORT_FIELD 
+    where SORT_FIELD = countryCode | elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/cities/{args.cityId}/nearbyCities", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"radius\":\"radius\",\"distanceUnit\":\"distanceUnit\",\"countryIds\":\"countryIds\",\"excludedCountryIds\":\"excludedCountryIds\",\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"types\":\"types\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """Get city time"""
+  getCityTimeUsingGET(
+    """A city id (either native 'id' or 'wikiDataId')"""
+    cityId: String!
+  ): Time_Response @httpOperation(path: "/geo/cities/{args.cityId}/time", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET)
+  """
+  Find countries, filtering by optional criteria. If no criteria are set, you will get back all known countries.
+  
+  """
+  getCountriesUsingGET(
+    """Only countries supporting this currency"""
+    currencyCode: String
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort countries. 
+    Format: ±SORT_FIELD 
+    where SORT_FIELD = code | name
+    """
+    sort: String
+  ): Countries_Response @httpOperation(path: "/geo/countries", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"currencyCode\":\"currencyCode\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\"}")
+  """Get the details for a specific country, including number of regions."""
+  getCountryUsingGET(
+    """An ISO-3166 country code or WikiData id"""
+    countryId: String!
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Display results in this language"""
+    languageCode: String
+  ): Country_Response @httpOperation(path: "/geo/countries/{args.countryId}", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"asciiMode\":\"asciiMode\",\"languageCode\":\"languageCode\"}")
+  """
+  Get all regions in a specific country. These could be states, provinces, districts, or otherwise major
+  political divisions.
+  
+  """
+  getRegionsUsingGET(
+    """An ISO-3166 country code or WikiData id"""
+    countryId: String!
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort regions. 
+    Format: ±SORT_FIELD 
+    where SORT_FIELD = fipsCode | isoCode | name
+    """
+    sort: String
+  ): Country_Regions_Response @httpOperation(path: "/geo/countries/{args.countryId}/regions", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\"}")
+  """
+  Get the details of a specific country region, including number of cities.
+  """
+  getRegionUsingGET(
+    """An ISO-3166 country code or WikiData id"""
+    countryId: String!
+    """An ISO-3166 or FIPS region code"""
+    regionCode: String!
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Display results in this language"""
+    languageCode: String
+  ): Country_Region_Response @httpOperation(path: "/geo/countries/{args.countryId}/regions/{args.regionCode}", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"asciiMode\":\"asciiMode\",\"languageCode\":\"languageCode\"}")
+  """
+  Get the administrative divisions in a specific country region. The country and region info is omitted in the
+  response.
+  
+  """
+  findRegionDivisionsUsingGET(
+    """An ISO-3166 country code or WikiData id"""
+    countryId: String!
+    """An ISO-3166 or FIPS region code"""
+    regionCode: String!
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort place results. 
+    'Format: ±SORT_FIELD,±SORT_FIELD' 
+    where SORT_FIELD = elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/countries/{args.countryId}/regions/{args.regionCode}/adminDivisions", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Get the cities in a specific country region. The country and region info is omitted in the response.
+  
+  """
+  findRegionCitiesUsingGET(
+    """An ISO-3166 country code or WikiData id"""
+    countryId: String!
+    """An ISO-3166 or FIPS region code"""
+    regionCode: String!
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Only places for these types (comma-delimited): CITY | ADM2"""
+    types: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort place results. 
+    'Format: ±SORT_FIELD,±SORT_FIELD' 
+    where SORT_FIELD = elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/countries/{args.countryId}/regions/{args.regionCode}/cities", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"types\":\"types\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Find cities near the given location, filtering by optional criteria. If no criteria are set, you will get back
+  all known cities.
+  
+  """
+  findCitiesNearLocationUsingGET(
+    """A latitude/longitude in ISO-6709 format: ±DD.DDDD±DDD.DDDD"""
+    locationId: String!
+    """The location radius within which to find places"""
+    radius: Int
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+    """
+    Only places in these countries (comma-delimited country codes or WikiData ids)
+    """
+    countryIds: String
+    """
+    Only places NOT in these countries (comma-delimited country codes or WikiData ids)
+    """
+    excludedCountryIds: String
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Only places for these types (comma-delimited): CITY | ADM2"""
+    types: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort places. 
+    Format: ±SORT_FIELD,±SORT_FIELD 
+    where SORT_FIELD = countryCode | elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/locations/{args.locationId}/nearbyCities", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"radius\":\"radius\",\"distanceUnit\":\"distanceUnit\",\"countryIds\":\"countryIds\",\"excludedCountryIds\":\"excludedCountryIds\",\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"types\":\"types\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Find administrative divisions near the given location, filtering by optional criteria. If no criteria are set,
+  you will get back all known divisions.
+  
+  """
+  findDivisionsNearLocationUsingGET(
+    """A latitude/longitude in ISO-6709 format: ±DD.DDDD±DDD.DDDD"""
+    locationId: String!
+    """The location radius within which to find places"""
+    radius: Int
+    """The unit of distance: MI | KM"""
+    distanceUnit: String = "MI"
+    """
+    Only places in these countries (comma-delimited country codes or WikiData ids)
+    """
+    countryIds: String
+    """
+    Only places NOT in these countries (comma-delimited country codes or WikiData ids)
+    """
+    excludedCountryIds: String
+    """Only places having at least this population"""
+    minPopulation: Int
+    """Only places having no more than this population"""
+    maxPopulation: Int
+    """
+    Only entities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name
+    as it appears in that language.
+    """
+    namePrefix: String
+    """
+    When name-prefix matching, whether or not to match on names in the default language if a non-default languageCode is set.
+    """
+    namePrefixDefaultLangResults: Boolean = true
+    """Only places in these time-zones (comma-delimited)"""
+    timeZoneIds: String
+    """Display results using ASCII characters"""
+    asciiMode: Boolean
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """Display results in this language"""
+    languageCode: String
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+    """
+    How to sort places. 
+    Format: ±SORT_FIELD,±SORT_FIELD 
+    where SORT_FIELD = countryCode | elevation | name | population
+    """
+    sort: String
+    """
+    Whether to include any divisions marked deleted: ALL | SINCE_YESTERDAY | SINCE_LAST_WEEK | NONE
+    """
+    includeDeleted: String = "NONE"
+  ): Populated_Places_Response @httpOperation(path: "/geo/locations/{args.locationId}/nearbyDivisions", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"radius\":\"radius\",\"distanceUnit\":\"distanceUnit\",\"countryIds\":\"countryIds\",\"excludedCountryIds\":\"excludedCountryIds\",\"minPopulation\":\"minPopulation\",\"maxPopulation\":\"maxPopulation\",\"namePrefix\":\"namePrefix\",\"namePrefixDefaultLangResults\":\"namePrefixDefaultLangResults\",\"timeZoneIds\":\"timeZoneIds\",\"asciiMode\":\"asciiMode\",\"hateoasMode\":\"hateoasMode\",\"languageCode\":\"languageCode\",\"limit\":\"limit\",\"offset\":\"offset\",\"sort\":\"sort\",\"includeDeleted\":\"includeDeleted\"}")
+  """
+  Find currencies, filtering by optional criteria. If no criteria are set, you will get back all known currencies.
+  """
+  getCurrenciesUsingGET(
+    """Currencies for this country id"""
+    countryId: String!
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+  ): Currencies_Response @httpOperation(path: "/locale/currencies", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"countryId\":\"countryId\",\"hateoasMode\":\"hateoasMode\",\"limit\":\"limit\",\"offset\":\"offset\"}")
+  """Get all supported languages"""
+  getLanguagesUsingGET(
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+  ): Languages_Response @httpOperation(path: "/locale/languages", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"hateoasMode\":\"hateoasMode\",\"limit\":\"limit\",\"offset\":\"offset\"}")
+  """Get all known locales"""
+  getLocalesUsingGET(
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+  ): Locales_Response @httpOperation(path: "/locale/locales", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"hateoasMode\":\"hateoasMode\",\"limit\":\"limit\",\"offset\":\"offset\"}")
+  """Get all known time-zones"""
+  getTimezonesUsingGET(
+    """Include HATEOAS-style links in results"""
+    hateoasMode: Boolean = true
+    """The maximum number of results to retrieve"""
+    limit: Int = 10
+    """The zero-ary offset index into the results"""
+    offset: Int
+  ): Time_Zones_Response @httpOperation(path: "/locale/timezones", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET, queryParamArgMap: "{\"hateoasMode\":\"hateoasMode\",\"limit\":\"limit\",\"offset\":\"offset\"}")
+  """Get time-zone"""
+  getTimeZoneUsingGET(
+    """A time-zone id"""
+    zoneId: String!
+  ): Time_Zone_Response @httpOperation(path: "/locale/timezones/{args.zoneId}", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET)
+  """Get time-zone date-time"""
+  getTimeZoneDateTimeUsingGET(
+    """A time-zone id"""
+    zoneId: String!
+  ): Date_Time_Response @httpOperation(path: "/locale/timezones/{args.zoneId}/dateTime", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET)
+  """Get time-zone time"""
+  getTimeZoneTimeUsingGET(
+    """A time-zone id"""
+    zoneId: String!
+  ): Time_Response @httpOperation(path: "/locale/timezones/{args.zoneId}/time", operationSpecificHeaders: "{\"Content-Type\":\"application/json\",\"Accept\":\"application/json\"}", httpMethod: GET)
+  """
+  Returns severe weather alerts issued by meteorological agencies - given a lat, and a lon.
+  """
+  alerts(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    """Your registered API key."""
+    key: String!
+  ): WeatherAlert @httpOperation(path: "/alerts", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"key\":\"key\"}")
+  """Returns a Current Observation - given a lat, and a lon."""
+  current(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    include: queryInput_current_include
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    """Comma separated list of Station Call ID's. Example: KRDU,KBFI,KVNY"""
+    stations: String
+    """
+    Comma separated list of points. Example: (35.5, -75.5),(45, 65),(45.12, -130.5)
+    """
+    points: String
+    """Comma separated list of City ID's. Example: 4487042, 4494942, 4504871"""
+    cities: String
+    units: queryInput_current_units
+    lang: queryInput_current_lang
+    """Your registered API key."""
+    key: String!
+  ): CurrentObsGroup @httpOperation(path: "/current", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"include\":\"include\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"stations\":\"stations\",\"points\":\"points\",\"cities\":\"cities\",\"units\":\"units\",\"lang\":\"lang\",\"key\":\"key\"}")
+  """
+  Returns a daily forecast, where each point represents one day (24hr) period. Every point has a datetime string in the format "YYYY-MM-DD". One day begins at 00:00 UTC, and ends at 23:59 UTC. 
+  
+  """
+  forecast_daily(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    """Number of days to return. Default 16."""
+    days: Float
+    units: queryInput_forecast_daily_units
+    lang: queryInput_forecast_daily_lang
+    """Your registered API key."""
+    key: String!
+  ): ForecastDay @httpOperation(path: "/forecast/daily", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"days\":\"days\",\"units\":\"units\",\"lang\":\"lang\",\"key\":\"key\"}")
+  """
+  Returns a 60 minute precipitation forecast, where each point represents one minute (1 min) period.
+  """
+  forecast_minutely(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    units: queryInput_forecast_minutely_units
+    """Your registered API key."""
+    key: String!
+  ): FCMinutely @httpOperation(path: "/forecast/minutely", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"units\":\"units\",\"key\":\"key\"}")
+  """
+  Returns 72 hour (hourly) Air Quality forecast, where each point represents a one hour period.
+  """
+  forecast_airquality(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Your registered API key."""
+    key: String!
+    """Number of hours to return."""
+    hours: Int
+  ): AQHourly @httpOperation(path: "/forecast/airquality", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"key\":\"key\",\"hours\":\"hours\"}")
+  """
+  Returns historical air quality conditions. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  history_airquality(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Your registered API key."""
+    key: String!
+  ): AQCurrentGroup @httpOperation(path: "/history/airquality", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"key\":\"key\"}")
+  """Returns current air quality conditions."""
+  current_airquality(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Your registered API key."""
+    key: String!
+  ): AQCurrentGroup @httpOperation(path: "/current/airquality", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"key\":\"key\"}")
+  """
+  Returns an hourly forecast, where each point represents a one hour period. Every point has a datetime string in the format "YYYY-MM-DD:HH". Time is UTC. 
+  
+  """
+  forecast_hourly(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    units: queryInput_forecast_hourly_units
+    lang: queryInput_forecast_hourly_lang
+    """Number of hours to return."""
+    hours: Int
+    """Your registered API key."""
+    key: String!
+  ): ForecastHourly @httpOperation(path: "/forecast/hourly", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"units\":\"units\",\"lang\":\"lang\",\"hours\":\"hours\",\"key\":\"key\"}")
+  """
+  Returns Agweather Forecast  - Given a lat, and lon. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  forecast_agweather(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """Start Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    start_date: String!
+    """End Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    end_date: String!
+    units: queryInput_forecast_agweather_units
+    """Your registered API key."""
+    key: String!
+  ): ForecastAG @httpOperation(path: "/forecast/agweather", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"start_date\":\"start_date\",\"end_date\":\"end_date\",\"units\":\"units\",\"key\":\"key\"}")
+  """
+  Returns Historical Agweather Observations - Given a lat, and lon. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  history_agweather(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """Start Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    start_date: String!
+    """End Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    end_date: String!
+    tp: queryInput_history_agweather_tp!
+    units: queryInput_history_agweather_units
+    """Your registered API key."""
+    key: String!
+  ): HistoryAG @httpOperation(path: "/history/agweather", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"start_date\":\"start_date\",\"end_date\":\"end_date\",\"tp\":\"tp\",\"units\":\"units\",\"key\":\"key\"}")
+  """
+  Returns Historical Climate Normals (Averages) - Given a lat, and lon. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  normals(
+    """Latitude component of location."""
+    lat: Float!
+    """Longitude component of location."""
+    lon: Float!
+    """Start Day (MM-DD)."""
+    start_day: String!
+    """End Day (MM-DD)."""
+    end_day: String!
+    tp: queryInput_normals_tp!
+    units: queryInput_normals_units
+    """Series year for calculation. 2020 for 1991-2020. 2010 for 1981-2010."""
+    series_year: Float!
+    """Your registered API key."""
+    key: String!
+  ): Normals @httpOperation(path: "/normals", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"start_day\":\"start_day\",\"end_day\":\"end_day\",\"tp\":\"tp\",\"units\":\"units\",\"series_year\":\"series_year\",\"key\":\"key\"}")
+  """
+  Returns Historical Observations - Given a lat, and lon. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  history_daily(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    """Start Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    start_date: String!
+    """End Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    end_date: String!
+    units: queryInput_history_daily_units
+    lang: queryInput_history_daily_lang
+    """Your registered API key."""
+    key: String!
+  ): HistoryDay @httpOperation(path: "/history/daily", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"start_date\":\"start_date\",\"end_date\":\"end_date\",\"units\":\"units\",\"lang\":\"lang\",\"key\":\"key\"}")
+  """
+  Returns Historical Observations - Given a lat, and lon. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  history_hourly(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    """Start Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    start_date: String!
+    """End Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    end_date: String!
+    units: queryInput_history_hourly_units
+    lang: queryInput_history_hourly_lang
+    tz: queryInput_history_hourly_tz
+    """Your registered API key."""
+    key: String!
+  ): History @httpOperation(path: "/history/hourly", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"start_date\":\"start_date\",\"end_date\":\"end_date\",\"units\":\"units\",\"lang\":\"lang\",\"tz\":\"tz\",\"key\":\"key\"}")
+  """
+  Returns Historical Observations - Given a lat, and lon. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  history_subhourly(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """City ID. Example: 4487042"""
+    city_id: String
+    """
+    City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    """
+    city: String
+    """Postal Code. Example: 28546"""
+    postal_code: String
+    """Country Code (2 letter) - to be used with postal_code."""
+    country: String
+    """Station Call ID."""
+    station: String
+    """Start Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    start_date: String!
+    """End Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    end_date: String!
+    units: queryInput_history_subhourly_units
+    lang: queryInput_history_subhourly_lang
+    tz: queryInput_history_subhourly_tz
+    """Your registered API key."""
+    key: String!
+  ): HistorySubhourly @httpOperation(path: "/history/subhourly", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"city_id\":\"city_id\",\"city\":\"city\",\"postal_code\":\"postal_code\",\"country\":\"country\",\"station\":\"station\",\"start_date\":\"start_date\",\"end_date\":\"end_date\",\"units\":\"units\",\"lang\":\"lang\",\"tz\":\"tz\",\"key\":\"key\"}")
+  """
+  Retrieve an 8 day forecast relevant to te Energy Sector (degree days, solar radiation, precipitation, wind).
+  """
+  forecast_energy(
+    """Latitude component of location."""
+    lat: Float
+    """Longitude component of location."""
+    lon: Float
+    """Temperature threshold to use to calculate degree days (default 18 C)"""
+    threshold: Float
+    units: queryInput_forecast_energy_units
+    tp: queryInput_forecast_energy_tp
+    """Your registered API key."""
+    key: String!
+  ): EnergyObsGroupForecast @httpOperation(path: "/forecast/energy", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"threshold\":\"threshold\",\"units\":\"units\",\"tp\":\"tp\",\"key\":\"key\"}")
+  """
+  Returns aggregate energy specific historical weather fields, over a specified time period. See https://www.weatherbit.io/api for API specific rate limits.
+  """
+  history_energy(
+    """Latitude component of location."""
+    lat: Float!
+    """Longitude component of location."""
+    lon: Float!
+    """Start Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    start_date: String!
+    """End Date (YYYY-MM-DD or YYYY-MM-DD:HH)."""
+    end_date: String!
+    tp: queryInput_history_energy_tp
+    """Temperature threshold to use to calculate degree days (default 18 C)"""
+    threshold: Float
+    units: queryInput_history_energy_units
+    """Your registered API key."""
+    key: String!
+  ): EnergyObsGroup @httpOperation(path: "/history/energy", httpMethod: GET, queryParamArgMap: "{\"lat\":\"lat\",\"lon\":\"lon\",\"start_date\":\"start_date\",\"end_date\":\"end_date\",\"tp\":\"tp\",\"threshold\":\"threshold\",\"units\":\"units\",\"key\":\"key\"}")
+  """
+  Downloads bulk data files - OPTIONS: ( current.csv.gz, forecast_hourly.csv.gz, forecast_daily.csv.gz). Units are Metric (Celcius, m/s, etc).
+  """
+  bulk_files(
+    """Your registered API key."""
+    key: String!
+  ): JSON @httpOperation(path: "/bulk/files", httpMethod: GET, queryParamArgMap: "{\"key\":\"key\"}")
+}
+
+"""A list of populated places"""
+type Populated_Places_Response {
+  errors: [CitiesError]
+  links: [Link]
+  metadata: Metadata
+  data: [PopulatedPlaceSummary]
+}
+
+"""An error that occurred processing the request"""
+type CitiesError {
+  code: ErrorCode
+  message: String
+}
+
+"""
+One of a set of enumerated error codes representing the types of errors that can occur processing a
+request
+"""
+enum ErrorCode {
+  ACCESS_DENIED
+  ENTITY_NOT_FOUND
+  INCOMPATIBLE
+  PARAM_INVALID
+  PARAMS_MUTUALLY_EXCLUSIVE
+  REQUEST_UNPROCESSABLE
+}
+
+"""A HATEAOS link"""
+type Link {
+  href: String
+  rel: String
+}
+
+"""Result metadata (currently only associated with collection results)"""
+type Metadata {
+  """The zero-ary offset into the results (0 is the first result)"""
+  currentOffset: BigInt
+  """The total number of results across pages"""
+  totalCount: BigInt
+}
+
+"""
+The `BigInt` scalar type represents non-fractional signed whole numeric values.
+"""
+scalar BigInt
+
+"""Minimal populated-place info"""
+type PopulatedPlaceSummary {
+  """The country name (varies by languageCode)"""
+  country: String
+  """The ISO-3166 country code"""
+  countryCode: String
+  """Included if this is the result of a distance query"""
+  distance: Float
+  """The place GeoDB native id"""
+  id: Int
+  """The place latittude (-90.0 to 90.0)"""
+  latitude: Float
+  """The place longitude (-180.0 to 180.0)"""
+  longitude: Float
+  """The place name (varies by languageCode)"""
+  name: String
+  """The place population"""
+  population: Int
+  """The region name (varies by languageCode)"""
+  region: String
+  """The ISO or FIPS region code"""
+  regionCode: String
+  type: PopulatedPlaceType
+  """The place WikiData id"""
+  wikiDataId: String
+  dailyForecast: [Forecast] @resolveTo(requiredSelectionSet: """
+  {
+     latitude
+     longitude
+   }
+  """, sourceName: "Weather", sourceTypeName: "Query", sourceFieldName: "forecast_daily_by_lat_by_lon", sourceArgs: {lat: "{root.latitude}", lon: "{root.longitude}", key: "971a693de7ff47a89127664547988be5"}, result: "data")
+  todayForecast: Forecast @resolveTo(requiredSelectionSet: """
+  {
+     latitude
+     longitude
+   }
+  """, sourceName: "Weather", sourceTypeName: "Query", sourceFieldName: "forecast_daily_by_lat_by_lon", sourceArgs: {lat: "{root.latitude}", lon: "{root.longitude}", days: 1, key: "971a693de7ff47a89127664547988be5"}, result: "data[0]")
+}
+
+"""
+One of a set of enumerated populated-place types known by the service (currently only level-2 admin divisions and
+cities)
+"""
+enum PopulatedPlaceType {
+  ADM2
+  CITY
+}
+
+"""Populated-place details response"""
+type Populated_Place_Response {
+  errors: [CitiesError]
+  data: Populated_Place_Details
+}
+
+"""Full populated-place details"""
+type Populated_Place_Details {
+  """The country name (varies by languageCode)"""
+  country: String
+  """The ISO-3166 country code"""
+  countryCode: String
+  """If this place has been soft-deleted"""
+  deleted: Boolean
+  """The place elevation (meters) above sea level"""
+  elevationMeters: Int
+  """The place GeoDB native id"""
+  id: Int
+  """The place latittude (-90.0 to 90.0)"""
+  latitude: Float
+  """The place longitude (-180.0 to 180.0)"""
+  longitude: Float
+  """The place name (varies by languageCode)"""
+  name: String
+  """The place population"""
+  population: Int
+  """The region name (varies by languageCode)"""
+  region: String
+  """The ISO or FIPS region code"""
+  regionCode: String
+  """The place timezone id"""
+  timezone: String
+  type: PopulatedPlaceType
+  """The place WikiData id"""
+  wikiDataId: String
+}
+
+"""An ISO-6801 date-time response"""
+type Date_Time_Response {
+  errors: [CitiesError]
+  """The date-time in ISO-6801 format: yyyyMMdd'T'HHmmssZ"""
+  data: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+"""A decimal distance (in miles or kilometers)"""
+type Distance_Response {
+  errors: [CitiesError]
+  """
+  The distance in units as set by the distanceUnit param (defaults to miles)
+  """
+  data: Float
+}
+
+"""An ISO-8601 time response"""
+type Time_Response {
+  errors: [CitiesError]
+  """The time in ISO-8601 format: HHmmss.SSSZ"""
+  data: String
+}
+
+"""A list of countries"""
+type Countries_Response {
+  errors: [CitiesError]
+  links: [Link]
+  metadata: Metadata
+  data: [Country_Summary]
+}
+
+"""Minimal country info"""
+type Country_Summary {
+  """The ISO-3166 country code"""
+  code: String
+  """A list of supported ISO-4217 currency codes"""
+  currencyCodes: [String]
+  """The country name (varies by languageCode)"""
+  name: String
+  """The country WikiData id"""
+  wikiDataId: String
+}
+
+"""Country details response"""
+type Country_Response {
+  errors: [CitiesError]
+  data: Country_Details
+}
+
+"""Full country details"""
+type Country_Details {
+  """The country dialing prefix"""
+  callingCode: String
+  """The ISO-3166 country code"""
+  code: String
+  """A list of supported ISO-4217 currency codes"""
+  currencyCodes: [String]
+  """The country flag image"""
+  flagImageUri: String
+  """The country name (varies by languageCode)"""
+  name: String
+  """The number of regions in this country"""
+  numRegions: Int
+  """The country WikiData id"""
+  wikiDataId: String
+}
+
+"""A list of country regions"""
+type Country_Regions_Response {
+  errors: [CitiesError]
+  links: [Link]
+  metadata: Metadata
+  """A list of RegionSummaries"""
+  data: [Country_Region_Summary]
+}
+
+"""Minimal country region info"""
+type Country_Region_Summary {
+  """An ISO-3166 country code"""
+  countryCode: String
+  """The FIPS 10-4 region code"""
+  fipsCode: String
+  """The ISO region code"""
+  isoCode: String
+  """The region name (varies by languageCode)"""
+  name: String
+  """The region WikiData id"""
+  wikiDataId: String
+}
+
+"""Country region details response"""
+type Country_Region_Response {
+  errors: [CitiesError]
+  data: Country_Region_Details
+}
+
+"""Full country region details"""
+type Country_Region_Details {
+  """The region's capital city (varies by languageCode)"""
+  capital: String
+  """An ISO-3166 country code"""
+  countryCode: String
+  """The FIPS 10-4 region code"""
+  fipsCode: String
+  """The ISO region code"""
+  isoCode: String
+  """The region name (varies by languageCode)"""
+  name: String
+  """The number of cities in this region"""
+  numCities: Int
+  """The region WikiData id"""
+  wikiDataId: String
+}
+
+"""A list of currencies"""
+type Currencies_Response {
+  errors: [CitiesError]
+  links: [Link]
+  metadata: Metadata
+  data: [Currency]
+}
+
+"""Currency info"""
+type Currency {
+  """The ISO-4217 currency code"""
+  code: String
+  """A list of ISO-3166 country codes of countries supporting this currency"""
+  countryCodes: [String]
+  """The currency symbol"""
+  symbol: String
+}
+
+"""A list of languages supported by the system"""
+type Languages_Response {
+  errors: [CitiesError]
+  links: [Link]
+  metadata: Metadata
+  data: [Language]
+}
+
+"""A language supported by the service"""
+type Language {
+  code: query_getLanguagesUsingGET_allOf_1_data_items_code
+  name: String
+}
+
+enum query_getLanguagesUsingGET_allOf_1_data_items_code {
+  undefined
+  aa
+  ab
+  ae
+  af
+  ak
+  am
+  an
+  ar
+  as
+  av
+  ay
+  az
+  ba
+  be
+  bg
+  bh
+  bi
+  bm
+  bn
+  bo
+  br
+  bs
+  ca
+  ce
+  ch
+  co
+  cr
+  cs
+  cu
+  cv
+  cy
+  da
+  de
+  dv
+  dz
+  ee
+  el
+  en
+  eo
+  es
+  et
+  eu
+  fa
+  ff
+  fi
+  fj
+  fo
+  fr
+  fy
+  ga
+  gd
+  gl
+  gn
+  gu
+  gv
+  ha
+  he
+  hi
+  ho
+  hr
+  ht
+  hu
+  hy
+  hz
+  ia
+  id
+  ie
+  ig
+  ii
+  ik
+  io
+  is
+  it
+  iu
+  ja
+  jv
+  ka
+  kg
+  ki
+  kj
+  kk
+  kl
+  km
+  kn
+  ko
+  kr
+  ks
+  ku
+  kv
+  kw
+  ky
+  la
+  lb
+  lg
+  li
+  ln
+  lo
+  lt
+  lu
+  lv
+  mg
+  mh
+  mi
+  mk
+  ml
+  mn
+  mr
+  ms
+  mt
+  my
+  na
+  nb
+  nd
+  ne
+  ng
+  nl
+  nn
+  no
+  nr
+  nv
+  ny
+  oc
+  oj
+  om
+  or
+  os
+  pa
+  pi
+  pl
+  ps
+  pt
+  qu
+  rm
+  rn
+  ro
+  ru
+  rw
+  sa
+  sc
+  sd
+  se
+  sg
+  si
+  sk
+  sl
+  sm
+  sn
+  so
+  sq
+  sr
+  ss
+  st
+  su
+  sv
+  sw
+  ta
+  te
+  tg
+  th
+  ti
+  tk
+  tl
+  tn
+  to
+  tr
+  ts
+  tt
+  tw
+  ty
+  ug
+  uk
+  ur
+  uz
+  ve
+  vi
+  vo
+  wa
+  wo
+  xh
+  yi
+  yo
+  za
+  zh
+  zu
+}
+
+"""A list of locales"""
+type Locales_Response {
+  errors: [CitiesError]
+  links: [Link]
+  metadata: Metadata
+  data: [Locale]
+}
+
+"""A locale representing a language/region combination"""
+type Locale {
+  """The locale code"""
+  code: String
+}
+
+"""A list of time-zones"""
+type Time_Zones_Response {
+  errors: [CitiesError]
+  links: [Link]
+  metadata: Metadata
+  data: [Time_Zone]
+}
+
+"""A time-zone"""
+type Time_Zone {
+  """The time-zone id"""
+  id: String
+  """The time-zone name"""
+  name: String
+  """The number of hours this time-zone is offset from UTC"""
+  rawUtcOffsetHours: Int
+}
+
+"""A time-zone"""
+type Time_Zone_Response {
+  errors: [CitiesError]
+  """The time-zone id"""
+  id: String
+  """The time-zone name"""
+  name: String
+  """The number of hours this time-zone is offset from UTC"""
+  rawUtcOffsetHours: Int
+}
+
+scalar ObjMap
+
+enum HTTPMethod {
+  GET
+  HEAD
+  POST
+  PUT
+  DELETE
+  CONNECT
+  OPTIONS
+  TRACE
+  PATCH
+}
+
+type WeatherAlert {
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  alerts: [WeatherAlertGroup]
+}
+
+type WeatherAlertGroup {
+  """Brief description of weather alert"""
+  title: String
+  """Full description of weather alert"""
+  description: String
+  """Severity of weather. (Advisory | Watch | Warning)"""
+  severity: String
+  """Issued time UTC"""
+  effective_utc: String
+  """Issued time local"""
+  effective_local: String
+  """Expiration time UTC"""
+  expires_utc: String
+  """Expiration time local"""
+  expires_local: String
+  """URI to weather alert"""
+  uri: URL
+  alerts: [String]
+}
+
+"""
+A field whose value conforms to the standard URL format as specified in RFC3986: https://www.ietf.org/rfc/rfc3986.txt.
+"""
+scalar URL
+
+type CurrentObsGroup {
+  """Count of found observations"""
+  count: Int
+  data: [CurrentObs]
+}
+
+type CurrentObs {
+  """City name (closest)"""
+  city_name: String
+  """State abbreviation"""
+  state_code: String
+  """Country abbreviation"""
+  country_code: String
+  """Local IANA time zone"""
+  timezone: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Source Station ID"""
+  station: String
+  """List of data sources used in response"""
+  sources: [String]
+  """Visibility - default (M)"""
+  vis: Int
+  """Relative humidity (%)"""
+  rh: Int
+  """Dew point temperature - default (C)"""
+  dewpt: Float
+  """Wind direction (degrees)"""
+  wind_dir: Int
+  """Cardinal wind direction"""
+  wind_cdir: String
+  """Cardinal wind direction (text)"""
+  wind_cdir_full: String
+  """Wind speed - Default (m/s)"""
+  wind_speed: Float
+  """Wind gust speed - Default (m/s)"""
+  gust: Float
+  """Temperature - Default (C)"""
+  temp: Float
+  """Apparent temperature - Default (C)"""
+  app_temp: Float
+  """Cloud cover (%)"""
+  clouds: Int
+  weather: query_current_data_items_weather
+  """Cycle Hour (UTC) of observation"""
+  datetime: String
+  """Full time (UTC) of observation (YYYY-MM-DD HH:MM)"""
+  ob_time: String
+  """Unix Timestamp"""
+  ts: Float
+  """Time (UTC) of Sunrise (HH:MM)"""
+  sunrise: String
+  """Time (UTC) of Sunset (HH:MM)"""
+  sunset: String
+  """Mean sea level pressure in millibars (mb)"""
+  slp: Float
+  """Pressure (mb)"""
+  pres: Float
+  """Air quality index (US EPA standard 0 to +500)"""
+  aqi: Float
+  """UV Index"""
+  uv: Float
+  """Estimated solar radiation (W/m^2)"""
+  solar_rad: Float
+  """Global horizontal irradiance (W/m^2)"""
+  ghi: Float
+  """Direct normal irradiance (W/m^2)"""
+  dni: Float
+  """Diffuse horizontal irradiance (W/m^2)"""
+  dhi: Float
+  """Current solar elevation angle (Degrees)"""
+  elev_angle: Float
+  """Current solar hour angle (Degrees)"""
+  hour_angle: Float
+  """Part of the day (d = day, n = night)"""
+  pod: String
+  """Precipitation in last hour - Default (mm)"""
+  precip: Float
+  """Snowfall in last hour - Default (mm)"""
+  snow: Float
+}
+
+type query_current_data_items_weather {
+  """Icon code for forecast image display"""
+  icon: String
+  """Weather Condition code"""
+  code: Int
+  """Weather Condition description"""
+  description: String
+}
+
+"""
+Include 1 hour - minutely precip forecast in the response, or severe weather alerts
+"""
+enum queryInput_current_include {
+  minutely
+  alerts
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_current_units {
+  S
+  I
+}
+
+"""
+Language (Default: English) See <a target='blank' href='/api/requests'>language field description</a>
+"""
+enum queryInput_current_lang {
+  ar
+  az
+  be
+  bg
+  bs
+  ca
+  cs
+  de
+  fi
+  fr
+  el
+  es
+  et
+  hr
+  hu
+  id
+  it
+  is
+  kw
+  nb
+  nl
+  pl
+  pt
+  ro
+  ru
+  sk
+  sl
+  sr
+  sv
+  tr
+  uk
+  zh
+  zh_tw @enum(value: "\"zh-tw\"")
+}
+
+type ForecastDay {
+  """City Name"""
+  city_name: String
+  """State Abbreviation"""
+  state_code: String
+  """Country Abbreviation"""
+  country_code: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Local IANA time zone"""
+  timezone: String
+  data: [Forecast]
+}
+
+type Forecast {
+  """Unix Timestamp"""
+  ts: Float
+  """Timestamp in local time"""
+  timestamp_local: String
+  """Timestamp UTC"""
+  timestamp_utc: String
+  """Date in format "YYYY-MM-DD:HH". All datetime is in (UTC)"""
+  datetime: String
+  """Accumulated snowfall since last forecast point - default (mm)"""
+  snow: Float
+  """Snow Depth - default (mm)"""
+  snow_depth: Float
+  """Accumulated precipitation since last forecast point - default (mm)"""
+  precip: Float
+  """Temperature (Average) - default (C)"""
+  temp: Float
+  """Dewpoint (Average) - default (C)"""
+  dewpt: Float
+  """Maximum daily Temperature - default (C)"""
+  max_temp: Float
+  """Minimum daily Temperature - default (C)"""
+  min_temp: Float
+  """Apparent Maximum daily Temperature - default (C)"""
+  app_max_temp: Float
+  """Apparent Minimum daily Temperature - default (C)"""
+  app_min_temp: Float
+  """Relative Humidity as a percentage (%)"""
+  rh: Int
+  """Cloud cover as a percentage (%)"""
+  clouds: Int
+  weather: query_forecast_daily_data_items_weather
+  """Mean Sea level pressure (mb)"""
+  slp: Float
+  """Pressure (mb)"""
+  pres: Float
+  """UV Index"""
+  uv: Float
+  """[Deprecated] Max direct component of solar insolation (W/m^2)"""
+  max_dhi: Float
+  """Average Visibility default (KM)"""
+  vis: Float
+  """Chance of Precipitation as a percentage (%)"""
+  pop: Float
+  """Moon phase"""
+  moon_phase: Float
+  """Sunrise unix timestamp"""
+  sunrise_ts: Int
+  """Sunset unix timestamp"""
+  sunset_ts: Int
+  """Moonrise unix timestamp"""
+  moonrise_ts: Int
+  """Moonset unix timestamp"""
+  moonset_ts: Int
+  """Part of the day (d = day, n = night)"""
+  pod: String
+  """Wind Speed (default m/s)"""
+  wind_spd: Float
+  """Wind direction"""
+  wind_dir: Int
+  """Cardinal wind direction"""
+  wind_cdir: String
+  """Cardinal wind direction (text)"""
+  wind_cdir_full: String
+}
+
+type query_forecast_daily_data_items_weather {
+  """Icon code for forecast image display"""
+  icon: String
+  """Weather Condition code"""
+  code: Int
+  """Weather Condition description"""
+  description: String
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_forecast_daily_units {
+  S
+  I
+}
+
+"""
+Language (Default: English) See <a target='blank' href='/api/requests'>language field description</a>
+"""
+enum queryInput_forecast_daily_lang {
+  ar
+  az
+  be
+  bg
+  bs
+  ca
+  cs
+  de
+  fi
+  fr
+  el
+  es
+  et
+  hr
+  hu
+  id
+  it
+  is
+  kw
+  nb
+  nl
+  pl
+  pt
+  ro
+  ru
+  sk
+  sl
+  sr
+  sv
+  tr
+  uk
+  zh
+  zh_tw @enum(value: "\"zh-tw\"")
+}
+
+type FCMinutely {
+  """City Name"""
+  city_name: String
+  """State Abbreviation"""
+  state_code: String
+  """Country Abbreviation"""
+  country_code: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Local IANA time zone"""
+  timezone: String
+  data: [FCMinutelyOb]
+}
+
+type FCMinutelyOb {
+  """Full time (UTC) of forecast point (YYYY-MM-DD HH:MM)"""
+  timestamp_utc: String
+  """Full local time of forecast point (YYYY-MM-DD HH:MM)"""
+  timestamp_local: String
+  """Unix Timestamp"""
+  ts: Float
+  """Precipitation rate - Default (mm/hr)"""
+  precip: Float
+  """Temperature - Default (C)"""
+  temp: Float
+  """Snowfall rate - Default (mm/hr)"""
+  snow: Float
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_forecast_minutely_units {
+  S
+  I
+}
+
+type AQHourly {
+  """City Name"""
+  city_name: String
+  """State Abbreviation"""
+  state_code: String
+  """Country Abbreviation"""
+  country_code: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Local IANA time zone"""
+  timezone: String
+  data: [AQHour]
+}
+
+type AQHour {
+  """Unix Timestamp"""
+  ts: Float
+  """Timestamp in local time"""
+  timestamp_local: String
+  """Timestamp UTC"""
+  timestamp_utc: String
+  """Cloud cover as a percentage (%)"""
+  aqi: Int
+  """Concentration of SO2 (µg/m³)"""
+  so2: Float
+  """Concentration of NO2 (µg/m³)"""
+  no2: Float
+  """Concentration of O3 (µg/m³)"""
+  o3: Float
+  """Concentration of PM 2.5 (µg/m³)"""
+  pm25: Float
+  """Concentration of PM 10 (µg/m³)"""
+  pm10: Float
+}
+
+type AQCurrentGroup {
+  """City Name"""
+  city_name: String
+  """State Abbreviation"""
+  state_code: String
+  """Country Abbreviation"""
+  country_code: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Local IANA time zone"""
+  timezone: String
+  data: [AQCurrent]
+}
+
+type AQCurrent {
+  """Cloud cover as a percentage (%)"""
+  aqi: Int
+  """Concentration of SO2 (µg/m³)"""
+  so2: Float
+  """Concentration of NO2 (µg/m³)"""
+  no2: Float
+  """Concentration of O3 (µg/m³)"""
+  o3: Float
+  """Concentration of PM 2.5 (µg/m³)"""
+  pm25: Float
+  """Concentration of PM 10 (µg/m³)"""
+  pm10: Float
+}
+
+type ForecastHourly {
+  """City Name"""
+  city_name: String
+  """State Abbreviation"""
+  state_code: String
+  """Country Abbreviation"""
+  country_code: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Local IANA time zone"""
+  timezone: String
+  data: [ForecastHour]
+}
+
+type ForecastHour {
+  """Unix Timestamp"""
+  ts: Float
+  """Timestamp in local time"""
+  timestamp_local: String
+  """Timestamp UTC"""
+  timestamp_utc: String
+  """Date in format "YYYY-MM-DD:HH". All datetime is in (UTC)"""
+  datetime: String
+  """Accumulated snowfall since last forecast point - Default (mm)"""
+  snow: Float
+  """Snow depth - Default (mm)"""
+  snow_depth: Float
+  """Accumulated precipitation since last forecast point. Default (mm)"""
+  precip: Float
+  """Temperature - Default (C)"""
+  temp: Float
+  """Dewpoint - Default (C)"""
+  dewpt: Float
+  """Apparent Temperature - Default (C)"""
+  app_temp: Float
+  """Relative Humidity as a percentage (%)"""
+  rh: Int
+  """Cloud cover as a percentage (%)"""
+  clouds: Int
+  weather: query_forecast_hourly_data_items_weather
+  """Mean Sea level pressure (mb)"""
+  slp: Float
+  """Pressure (mb)"""
+  pres: Float
+  """UV Index"""
+  uv: Float
+  """Estimated solar radiation (W/m^2)"""
+  solar_rad: Float
+  """Global horizontal solar irradiance (W/m^2)"""
+  ghi: Float
+  """Diffuse normal solar irradiance (W/m^2)"""
+  dhi: Float
+  """Direct normal solar irradiance (W/m^2)"""
+  dni: Float
+  """Visibility - Default (KM)"""
+  vis: Float
+  """Part of day (d = day, n = night)"""
+  pod: String
+  """Chance of Precipitation as a percentage (%)"""
+  pop: Float
+  """Wind Speed - Default (m/s)"""
+  wind_spd: Float
+  """Wind Gust Speed - Default (m/s)"""
+  wind_gust_spd: Float
+  """Wind direction"""
+  wind_dir: Int
+  """Cardinal wind direction"""
+  wind_cdir: String
+  """Cardinal wind direction (text)"""
+  wind_cdir_full: String
+}
+
+type query_forecast_hourly_data_items_weather {
+  """Icon code for forecast image display"""
+  icon: String
+  """Weather Condition code"""
+  code: Int
+  """Weather Condition description"""
+  description: String
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_forecast_hourly_units {
+  S
+  I
+}
+
+"""
+Language (Default: English) See <a target='blank' href='/api/requests'>language field description</a>
+"""
+enum queryInput_forecast_hourly_lang {
+  ar
+  az
+  be
+  bg
+  bs
+  ca
+  cs
+  de
+  fi
+  fr
+  el
+  es
+  et
+  hr
+  hu
+  id
+  it
+  is
+  kw
+  nb
+  nl
+  pl
+  pt
+  ro
+  ru
+  sk
+  sl
+  sr
+  sv
+  tr
+  uk
+  zh
+  zh_tw @enum(value: "\"zh-tw\"")
+}
+
+type ForecastAG {
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  data: [HistoryAGObj]
+}
+
+type HistoryAGObj {
+  """Bulk Soil Density"""
+  bulk_soil_density: Float
+  """Average Downward Longwave Radiation Flux"""
+  dlwrf_avg: Float
+  """Maximum Downward Longwave Radiation Flux"""
+  dlwrf_max: Float
+  """Net Downward Longwave Radiation Flux"""
+  dlwrf_net: Float
+  """Average Downward Shortwave Radiation Flux"""
+  dswrf_avg: Float
+  """Maximum Downward Shortwave Radiation Flux"""
+  dswrf_max: Float
+  """Net Downward Shortwave Radiation Flux"""
+  dswrf_net: Float
+  """Evapotranspiration"""
+  evapotranspiration: Float
+  """Precipitation"""
+  precip: Float
+  """Average Pressure"""
+  pres_avg: Float
+  """Data revision status"""
+  revision_status: String
+  """Average Skin Temperature"""
+  skin_temp_avg: Float
+  """Maximum Skin Temperature"""
+  skin_temp_max: Float
+  """Minimum Skin Temperature"""
+  skin_temp_min: Float
+  """Soil Moisture (0-10cm depth)"""
+  soilm_0_10cm: Float
+  """Soil Moisture (100-200cm depth)"""
+  soilm_100_200cm: Float
+  """Soil Moisture (10-40cm depth)"""
+  soilm_10_40cm: Float
+  """Soil Moisture (40-100cm depth)"""
+  soilm_40_100cm: Float
+  """Soil Temperature (0-10cm depth)"""
+  soilt_0_10cm: Float
+  """Soil Temperature (100-200cm depth)"""
+  soilt_100_200cm: Float
+  """Soil Temperature (10-40cm depth)"""
+  soilt_10_40cm: Float
+  """Soil Temperature (40-100cm depth)"""
+  soilt_40_100cm: Float
+  """Specific Humidity"""
+  specific_humidity: Float
+  """Timestamp in local time"""
+  timestamp_local: String
+  """Timestamp UTC"""
+  timestamp_utc: String
+  """Average Temperature at 2 meters"""
+  temp_2m_avg: Float
+  """Volumetric Soil Moisture (0-10cm depth)"""
+  v_soilm_0_10cm: Float
+  """Volumetric Soil Moisture (100-200cm depth)"""
+  v_soilm_100_200cm: Float
+  """Volumetric Soil Moisture (10-40cm depth)"""
+  v_soilm_10_40cm: Float
+  """Volumetric Soil Moisture (40-100cm depth)"""
+  v_soilm_40_100cm: Float
+  """Valid Date"""
+  valid_date: Date
+  """Average Wind Speed at 10 meters"""
+  wind_10m_spd_avg: Float
+}
+
+"""Represents date values"""
+scalar Date
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_forecast_agweather_units {
+  S
+  I
+}
+
+type HistoryAG {
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  data: [HistoryAGObj]
+}
+
+"""Time period of calculation (daily [DEFAULT], or hourly)."""
+enum queryInput_history_agweather_tp {
+  daily
+  hourly
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_history_agweather_units {
+  S
+  I
+}
+
+type Normals {
+  """Local IANA time zone"""
+  timezone: String
+  """List of data sources used in response"""
+  sources: [String]
+  data: [NormalsObj]
+}
+
+type NormalsObj {
+  """Day number"""
+  day: Float
+  """Month number"""
+  month: Float
+  """Hour number"""
+  hour: Float
+  """Average temperature"""
+  temp: Float
+  """Average dew point"""
+  dewpt: Float
+  """Maximum wind speed"""
+  max_wind_spd: Float
+  """Minimum wind speed"""
+  min_wind_spd: Float
+  """Average wind speed"""
+  wind_spd: Float
+  """Average wind direction"""
+  wind_dir: Float
+  """Average Liquid equivalent precipitation - Default (mm)"""
+  precip: Float
+  """Average Snowfall - Default (mm)"""
+  snow: Float
+}
+
+"""Time period of calculation (daily, monthly, or hourly)."""
+enum queryInput_normals_tp {
+  daily
+  hourly
+  monthly
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_normals_units {
+  S
+  I
+}
+
+type HistoryDay {
+  """City name (Closest)"""
+  city_name: String
+  """State abbreviation"""
+  state_code: String
+  """Country abbreviation"""
+  country_code: String
+  """Local IANA time zone"""
+  timezone: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """List of data sources used in response"""
+  sources: [String]
+  data: [HistoryDayObj]
+}
+
+type HistoryDayObj {
+  """Date in format "YYYY-MM-DD". All datetime is in (UTC)"""
+  datetime: Date
+  """Unix timestamp of datetime (Midnight UTC)"""
+  ts: Int
+  """Data revision status (interim or final)"""
+  revision_status: String
+  """Average sea level pressure (mb)"""
+  slp: Float
+  """Average pressure (mb)"""
+  pres: Float
+  """Average relative humidity as a percentage (%)"""
+  rh: Float
+  """Average dewpoint - Default (C)"""
+  dewpt: Float
+  """Average temperature - Default (C)"""
+  temp: Float
+  """Max temperature - Default (C)"""
+  max_temp: Float
+  """Time of max memperature - Unix Timestamp"""
+  max_temp_ts: Float
+  """Min temperature - Default (C)"""
+  min_temp: Float
+  """Time of max temperature - unix timestamp"""
+  min_temp_ts: Float
+  """Average wind speed - default (m/s)"""
+  wind_spd: Float
+  """Average wind direction (degrees)"""
+  wind_dir: Int
+  """Wind gust speed - default (m/s)"""
+  wind_gust_spd: Float
+  """Max 2min Wind Speed - default (m/s)"""
+  max_wind_spd: Float
+  """Direction of wind at time of max 2min wind (degrees)"""
+  max_wind_dir: Int
+  """Time of max 2min wind - unix timestamp"""
+  max_wind_spd_ts: Float
+  """Average hourly global horizontal solar irradiance (W/m^2)"""
+  ghi: Int
+  """Total global horizontal solar irradiance (W/m^2)"""
+  t_ghi: Int
+  """Average direct normal solar irradiance (W/m^2)"""
+  dni: Int
+  """Total direct normal solar irradiance (W/m^2)"""
+  t_dni: Int
+  """Average hourly diffuse horizontal solar irradiance (W/m^2)"""
+  dhi: Int
+  """Total diffuse horizontal solar irradiance (W/m^2)"""
+  t_dhi: Int
+  """Max UV Index (1-11+)"""
+  max_uv: Float
+  """Liquid equivalent precipitation - default (mm)"""
+  precip: Float
+  """Satellite estimated liquid equivalent precipitation - default (mm)"""
+  precip_gpm: Float
+  """Snowfall - default (mm)"""
+  snow: Float
+  """Snow Depth - default (mm)"""
+  snow_depth: Float
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_history_daily_units {
+  S
+  I
+}
+
+"""
+Language (Default: English) See <a target='blank' href='/api/requests'>language field description</a>
+"""
+enum queryInput_history_daily_lang {
+  ar
+  az
+  be
+  bg
+  bs
+  ca
+  cs
+  de
+  fi
+  fr
+  el
+  es
+  et
+  hr
+  hu
+  id
+  it
+  is
+  kw
+  nb
+  nl
+  pl
+  pt
+  ro
+  ru
+  sk
+  sl
+  sr
+  sv
+  tr
+  uk
+  zh
+  zh_tw @enum(value: "\"zh-tw\"")
+}
+
+type History {
+  """City name (Closest)"""
+  city_name: String
+  """State abbreviation"""
+  state_code: String
+  """Country abbreviation"""
+  country_code: String
+  """Local IANA time zone"""
+  timezone: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """List of data sources used in response"""
+  sources: [String]
+  data: [HistoryObj]
+}
+
+type HistoryObj {
+  """Unix Timestamp"""
+  ts: Float
+  """Timestamp in local time"""
+  timestamp_local: String
+  """Timestamp UTC"""
+  timestamp_utc: String
+  """Data revision status (interim or final)"""
+  revision_status: String
+  """Date in format "YYYY-MM-DD:HH". All datetime is in (UTC)"""
+  datetime: String
+  """Sea level pressure (mb)"""
+  slp: Float
+  """Pressure (mb)"""
+  pres: Float
+  """Relative Humidity as a percentage (%)"""
+  rh: Int
+  """Dew point (Default Celcius)"""
+  dewpt: Float
+  """Temperature (Default Celcius)"""
+  temp: Float
+  """Apparent Temperature or Wind Chill/Heat Index (Default Celcius)"""
+  app_temp: Float
+  """Wind Speed (Default m/s)"""
+  wind_spd: Float
+  """Wind Gust Speed - Default (m/s)"""
+  wind_gust_spd: Float
+  """Wind direction (Degrees)"""
+  wind_dir: Int
+  """UV Index (1-11+)"""
+  uv: Float
+  """Estimated solar radiation (W/m^2)"""
+  solar_rad: Float
+  """Global horizontal solar irradiance (W/m^2)"""
+  ghi: Float
+  """Diffuse normal solar irradiance (W/m^2)"""
+  dhi: Float
+  """Direct normal solar irradiance (W/m^2)"""
+  dni: Float
+  """Solar hour angle (Degrees)"""
+  h_angle: Float
+  """Solar elevation angle (Degrees)"""
+  elev_angle: Float
+  """Azimuth angle (Degrees)"""
+  azimuth: Float
+  """Visibility (KM)"""
+  vis: Float
+  """Part of the day (d = day, n = night)"""
+  pod: String
+  weather: query_history_hourly_data_items_weather
+  """Cloud Cover 0-100 (%)"""
+  clouds: Int
+  """Liquid equivalent precipitation - Default (mm)"""
+  precip: Float
+  """Snowfall - Default (mm)"""
+  snow: Float
+}
+
+type query_history_hourly_data_items_weather {
+  """Icon code for forecast image display"""
+  icon: String
+  """Weather Condition code"""
+  code: Int
+  """Weather Condition description"""
+  description: String
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_history_hourly_units {
+  S
+  I
+}
+
+"""
+Language (Default: English) See <a target='blank' href='/api/requests'>language field description</a>
+"""
+enum queryInput_history_hourly_lang {
+  ar
+  az
+  be
+  bg
+  bs
+  ca
+  cs
+  de
+  fi
+  fr
+  el
+  es
+  et
+  hr
+  hu
+  id
+  it
+  is
+  kw
+  nb
+  nl
+  pl
+  pt
+  ro
+  ru
+  sk
+  sl
+  sr
+  sv
+  tr
+  uk
+  zh
+  zh_tw @enum(value: "\"zh-tw\"")
+}
+
+"""Assume utc (default) or local time for start_date, end_date"""
+enum queryInput_history_hourly_tz {
+  local
+  utc
+}
+
+type HistorySubhourly {
+  """City name (Closest)"""
+  city_name: String
+  """State abbreviation"""
+  state_code: String
+  """Country abbreviation"""
+  country_code: String
+  """Local IANA time zone"""
+  timezone: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """List of data sources used in response"""
+  sources: [String]
+  data: [HistoryObj]
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_history_subhourly_units {
+  S
+  I
+}
+
+"""
+Language (Default: English) See <a target='blank' href='/api/requests'>language field description</a>
+"""
+enum queryInput_history_subhourly_lang {
+  ar
+  az
+  be
+  bg
+  bs
+  ca
+  cs
+  de
+  fi
+  fr
+  el
+  es
+  et
+  hr
+  hu
+  id
+  it
+  is
+  kw
+  nb
+  nl
+  pl
+  pt
+  ro
+  ru
+  sk
+  sl
+  sr
+  sv
+  tr
+  uk
+  zh
+  zh_tw @enum(value: "\"zh-tw\"")
+}
+
+"""Assume utc (default) or local time for start_date, end_date"""
+enum queryInput_history_subhourly_tz {
+  local
+  utc
+}
+
+type EnergyObsGroupForecast {
+  """City name (closest)"""
+  city_name: String
+  """State abbreviation"""
+  state_code: String
+  """Country abbreviation"""
+  country_code: String
+  """Local IANA time zone"""
+  timezone: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Degree day threshold units"""
+  threshold_units: String
+  """Degree day threshold"""
+  threshold_value: String
+  data: [EnergyObsSeries]
+}
+
+type EnergyObsSeries {
+  """Date"""
+  date: Date
+  """Cooling degree days"""
+  cdd: Float
+  """Heating degree days"""
+  hdd: Float
+  """Average Relative humidity (%)"""
+  rh: Int
+  """Average dew point temperature - Default (C)"""
+  dewpt: Float
+  """Average wind direction (Degrees)"""
+  wind_dir: Int
+  """Average wind speed - Default (m/s)"""
+  wind_spd: Float
+  """Average temperature - Default (C)"""
+  temp: Float
+  """Average cloud cover (%)"""
+  clouds: Int
+  """Total global horizontal solar irradiance (W/m^2)"""
+  t_ghi: Float
+  """Total diffuse horizontal solar irradiance (W/m^2)"""
+  t_dhi: Float
+  """Total direct normal solar irradiance (W/m^2)"""
+  t_dni: Float
+  """
+  Average number of daily sun hours - # hours where Solar GHI > 1000 W/m^2
+  """
+  sun_hours: Float
+  """Total precipitation in period - Default (mm)"""
+  precip: Float
+  """Total snowfall in period - Default (mm)"""
+  snow: Float
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_forecast_energy_units {
+  S
+  I
+}
+
+"""Time period (default: daily)"""
+enum queryInput_forecast_energy_tp {
+  hourly
+  daily
+}
+
+type EnergyObsGroup {
+  """Count of found observations"""
+  count: Int
+  """Start Date"""
+  start_date: Int
+  """End Date"""
+  end_date: Int
+  data: [EnergyObs]
+}
+
+type EnergyObs {
+  """City name (closest)"""
+  city_name: String
+  """State abbreviation"""
+  state_code: String
+  """Country abbreviation"""
+  country_code: String
+  """Local IANA time zone"""
+  timezone: String
+  """Latitude"""
+  lat: Float
+  """Longitude"""
+  lon: Float
+  """Nearest Station ID [DEPRECATED]"""
+  station_id: String
+  """List of data sources used in response"""
+  sources: [String]
+  """Cooling degree days"""
+  cdd: Float
+  """Heating degree days"""
+  hdd: Float
+  """Average Relative humidity (%)"""
+  rh: Int
+  """Average dew point temperature - Default (C)"""
+  dewpt: Float
+  """Average wind direction (Degrees)"""
+  wind_dir: Int
+  """Average wind speed - Default (m/s)"""
+  wind_spd: Float
+  """Average temperature - Default (C)"""
+  temp: Float
+  """Average cloud cover (%)"""
+  clouds: Int
+  """Total global horizontal solar irradiance (W/m^2)"""
+  t_ghi: Float
+  """Total diffuse horizontal solar irradiance (W/m^2)"""
+  t_dhi: Float
+  """Total direct normal solar irradiance (W/m^2)"""
+  t_dni: Float
+  """
+  Average number of daily sun hours - # hours where Solar GHI > 1000 W/m^2
+  """
+  sun_hours: Float
+  """Total precipitation in period - Default (mm)"""
+  precip: Float
+  """Total snowfall in period - Default (mm)"""
+  snow: Float
+}
+
+"""Time period to aggregate by (daily, monthly)"""
+enum queryInput_history_energy_tp {
+  hourly
+  daily
+  monthly
+}
+
+"""
+Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a>
+"""
+enum queryInput_history_energy_units {
+  S
+  I
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+scalar ResolveToSourceArgs
